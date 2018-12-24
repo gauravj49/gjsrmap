@@ -6,4 +6,3 @@ scripts/*.pyc
 00_git_setup_usage.sh
 *.*~
 */*.*~
-*.
