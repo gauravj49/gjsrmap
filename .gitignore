@@ -1,0 +1,9 @@
+# Ignore all python's byte code files (python compiled code file )
+*.pyc
+scripts/*.pyc
+
+# Others
+00_git_setup_usage.sh
+*.*~
+*/*.*~
+*.
