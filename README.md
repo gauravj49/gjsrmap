@@ -33,17 +33,17 @@ An open source and fully customized pipeline that:
 		- Iteration 1: Map reads between 16 to 33 bp to custom reference sequences of mature microRNAs and piRNAs  
 
 		- Iteration 2: Map reads greater than 32 bp to custom reference sequences of other small non-coding RNAs. These are:  
-		  | Other small non-coding RNAs | Description                                        |
-		  |-----------------------------|----------------------------------------------------|
-		  | rRNA                        | Ribosomal RNA                                       |
-		  | scRNA                       | Small cytoplasmic RNA                              |
-		  | snRNA                       | Small nuclear RNA                                  |
-		  | snoRNA                      | Small nucleolar RNA                                |
-		  | premiRNA                    | microRNA precursors                                |
-		  | osncRNA                     | Other small noncoding RNA                          |
-		  | - tRNA                      | - Transfer RNA                                     |
-		  | - Mt-tRNA                   | - Transfer RNA located in the mitochondrial genome |
-		  | - misc_RNA                  | - Miscellaneous other RNA                          |
+			| Other small non-coding RNAs | Description                                          |
+			|-----------------------------|------------------------------------------------------|
+			| rRNA                        | Ribosomal RNA                                        |
+			| scRNA                       | Small cytoplasmic RNA                                |
+			| snRNA                       | Small nuclear RNA                                    |
+			| snoRNA                      | Small nucleolar RNA                                  |
+			| premiRNA                    | microRNA precursors                                  |
+			| osncRNA                     | Other small noncoding RNA                            |
+			| - tRNA                      | - Transfer RNA                                       |
+			| - Mt-tRNA                   | - Transfer RNA located   in the mitochondrial genome |
+			| - misc_RNA                  | - Miscellaneous other RNA                            |
 
 		- Iteration 3: Map the unmapped reads from iteration 1 and 2 to the species reference genome
 
