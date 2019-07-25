@@ -90,7 +90,7 @@ NCL=${9:-"input/annotation/rna_classes"}            # ncrna folder containing nc
 - Example command:  
 `` bash 06_run_ncRNA_mapping_usage.sh <above mentioned arguments>``
 
-## Citation
+## Citation:
 
 - ```Gaurav Jain, GJSrMap: The smallRNA mapping pipeline, (2018), GitHub repository, https://github.com/gauravj49/gjsrmap```
 
