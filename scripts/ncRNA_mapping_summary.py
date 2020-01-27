@@ -37,7 +37,7 @@ from gjainLIB import *      # import all the functions from the Gaurav`s python 
 
 ### for color scale
 from  matplotlib import colors
-from itertools import cycle, islice, chain, izip # barplot colors
+from itertools import cycle, islice, chain # barplot colors
 from termcolor import colored
 
 ### Modeling related ###
@@ -88,17 +88,17 @@ def main():
 
         # Create the regular expression
         r = re.compile(subset_files)
-        allncrnaCount_files = filter(r.search, allncrnaCount_files)
-        print "- Subset filenames:"
+        allncrnaCount_files = list(filter(r.search, allncrnaCount_files))
+        print("- Subset filenames:")
         for f in allncrnaCount_files:
-            print "\t- {0}".format(f)
+            print("\t- {0}".format(f))
         
-        print "\n- Total subset samples: {0}".format(len(allncrnaCount_files))
+        print("\n- Total subset samples: {0}".format(len(allncrnaCount_files)))
         if not skip_subset_conf:
             # Confirm the file names from user
-            print "\n- Do you want to proceed? Please press 'y' for yes or 'n' for no."
-            print "\t- Your option: ",
-            option = raw_input()
+            print("\n- Do you want to proceed? Please press 'y' for yes or 'n' for no.")
+            print("\t- Your option: ", end=' ')
+            option = input()
             if option.lower() == 'n':
                 sys.exit('You pressed "NO". Exiting now!')
 
@@ -121,14 +121,14 @@ def main():
     umrfo = open(uniquely_mapped_reads_file, 'a')
 
     # Get the counts from the counts file
-    print "- Getting the Dictionary of counts for all smallRNAs..."
+    print("- Getting the Dictionary of counts for all smallRNAs...")
     for st in smallrna_type:
         if st == 'allncrna':
             #print colored("\n- Getting library size...", "green")
-            print "\n- Getting library size..."
+            print("\n- Getting library size...")
         else:
             #print colored("\n- Getting counts for: {0} ..".format(st), "green")
-            print "\n- Getting counts for: {0} ..".format(st)
+            print("\n- Getting counts for: {0} ..".format(st))
 
         for f in allncrnaCount_files:
             get_counts(input_counts_dir, f, st, m, umrfo)
@@ -139,8 +139,8 @@ def main():
     # Remove list element "allncrna" from the list as we don't need to plot it
     try:
         smallrna_type.remove('allncrna')
-    except Exception,e: 
-        print str(e)
+    except Exception as e: 
+        print(str(e))
         pass
 
     # Convert nested dictionary into pandas dataframe
@@ -162,7 +162,7 @@ def main():
     # uniquely_mapped_reads
 
     # Get the merged counts file
-    print "\n- Getting merged counts file for all samples..."
+    print("\n- Getting merged counts file for all samples...")
     merged_file_dir = "{0}/merged_counts".format(get_file_info(output_file)[0])
     create_dir(merged_file_dir)
 
@@ -189,9 +189,9 @@ def main():
                     # Concatenate to the existing dataframe
                     merged_df = pd.concat([merged_df, dfm], axis=1)
                 else:
-                    print colored("\t- SampleId: {0} for {1} \n\t\t- Counts file does not exists...".format(fileid, smtype), "red")
-        except Exception,e: 
-            print str(e)
+                    print(colored("\t- SampleId: {0} for {1} \n\t\t- Counts file does not exists...".format(fileid, smtype), "red"))
+        except Exception as e: 
+            print(str(e))
             #pass
 
         # Add the mean as the last column
@@ -204,7 +204,7 @@ def main():
         
         # Save the merged counts file
         merged_counts_file = "{0}/{1}_{2}MergedCounts_normalized.txt".format(merged_file_dir, get_file_info(output_file)[1], smtype)
-        print "\t- {0}".format(merged_counts_file)
+        print("\t- {0}".format(merged_counts_file))
         
         # Save the text file
         fo = open(merged_counts_file, 'w')
@@ -219,16 +219,16 @@ def main():
     # Save the excel writer object
     if merged_excel:
         writer.save()
-        print "- {0}".format(merged_counts_excel)
+        print("- {0}".format(merged_counts_excel))
     
-    print "\n------------------------------------ PLOTS ------------------------------------------\n"
-    print "1) Plotting library size for the samples ..."
+    print("\n------------------------------------ PLOTS ------------------------------------------\n")
+    print("1) Plotting library size for the samples ...")
     df = pd.Series.to_frame(alzcltdata['uniquely_mapped_reads'])
     df = df.sort_values(by = ['uniquely_mapped_reads'], ascending=[True])
     plot_library_sizes(df, output_file, min_library_size, output_pdf_dir)
     
     #-----------------------------------------------------------------------------------------------------------------------------#
-    print "\n2) Plotting the aggregate of all the smallRNA classes in a pie chart..."
+    print("\n2) Plotting the aggregate of all the smallRNA classes in a pie chart...")
     # Get the aggregate of all the small rna classes
     allsmallrna = []
     for stype in smallrna_type:
@@ -263,13 +263,13 @@ def main():
         
         # clear up the plot
         plt.close('all')
-    except Exception,e: 
-        print str(e)
+    except Exception as e: 
+        print(str(e))
         pass
 
     #-----------------------------------------------------------------------------------------------------------------------------#
     # Plot most abundant smallrnas
-    print "\n3) Plotting most abundant smallRNAs for every smallRNA class..."
+    print("\n3) Plotting most abundant smallRNAs for every smallRNA class...")
     smallrna_abundance_barcharts(smallrna_type, smallrna_bcol, alzcltdata, 'All_nonCoding_RNA', output_file, 15)
     
     # clear up the plot
@@ -301,11 +301,11 @@ def plot_library_sizes(df, output_file, min_library_size, output_pdf_dir):
 
     # Plot the bar plot
     fig = plt.figure(figsize=(nsamples, nsamples), frameon=False)
-    bdf = plt.barh(range(len(df['uniquely_mapped_reads'])), df['uniquely_mapped_reads'], color=library_colors, align='center')
+    bdf = plt.barh(list(range(len(df['uniquely_mapped_reads']))), df['uniquely_mapped_reads'], color=library_colors, align='center')
 
     # Get the title and ytick labels
     plt.title('Library Size\n{0}'.format(get_file_info(output_file)[1]), fontsize=font_size)
-    plt.yticks(xrange(len(df)), df.index.tolist(), size=font_size)
+    plt.yticks(range(len(df)), df.index.tolist(), size=font_size)
     
     # Get the max and min yaxis values and let matplotlib take the log for us
     xmin, xmax = plt.gca().get_xlim()
@@ -340,8 +340,8 @@ def plot_library_sizes(df, output_file, min_library_size, output_pdf_dir):
 
         # clear up the plot
         plt.close('all')
-    except Exception,e: 
-        print str(e)
+    except Exception as e: 
+        print(str(e))
         pass
 
 def get_filtered_data(df, rnaStartCol, rnaEndCol, read_cutoff=5, sample_pc=95, library_size=0):
@@ -363,8 +363,8 @@ def get_filtered_data(df, rnaStartCol, rnaEndCol, read_cutoff=5, sample_pc=95, l
     try:
         fXrna = Xrna[Xrna<=sp.stats.scoreatpercentile(Xrna, sample_pc, axis=0)].mean(axis=0) >= read_cutoff
         Xrna  = Xrna.loc[:,fXrna]
-    except Exception,e: 
-        print str(e)
+    except Exception as e: 
+        print(str(e))
         pass
 
     # Add age and gender back
@@ -383,9 +383,9 @@ def smallrna_abundance_barcharts(smallrna_type, smallrna_cols, data, group, outp
     matplotlib.rcParams['xtick.major.pad']= 15
     matplotlib.rcParams['ytick.major.pad']= 15
     
-    for stype, col in izip(smallrna_type, smallrna_cols):
+    for stype, col in zip(smallrna_type, smallrna_cols):
         try:
-            print "\t- Plotting {0} ...".format(stype)
+            print("\t- Plotting {0} ...".format(stype))
             c = Counter()
             for index, row in data.iterrows():
                 smrnas = Counter(row[stype])
@@ -439,7 +439,7 @@ def smallrna_abundance_barcharts(smallrna_type, smallrna_cols, data, group, outp
             plt.gca().yaxis.set_ticks_position('left')
 
             # this is an inset axes over the main axes
-            stype_list = list(c.itervalues())
+            stype_list = list(c.values())
             a = plt.axes([.6, .6, .2, .2])
             vplot = plt.violinplot(stype_list, showmeans=True, showextrema=True, bw_method=0.5)
             for patch in vplot['bodies']:
@@ -459,8 +459,8 @@ def smallrna_abundance_barcharts(smallrna_type, smallrna_cols, data, group, outp
 
             # clear up the plot
             plt.close('all')
-        except Exception,e: 
-            print str(e)
+        except Exception as e: 
+            print(str(e))
             pass
 
 def get_counts(input_dir, allncrna_filename, smallrna_type, m, umrfo):
@@ -480,7 +480,7 @@ def get_counts(input_dir, allncrna_filename, smallrna_type, m, umrfo):
         
         # print >> sys.stderr, colored("\t- {0:>9}: ".format(library_size),"green"),           
         # print >> sys.stderr, "{0}".format(fileid)
-        print "\t- {0:>9}: {1}".format(library_size, fileid)
+        print("\t- {0:>9}: {1}".format(library_size, fileid))
         umrfo.write("{0}\t{1}\n".format(fileid, library_size))
     else:
         # Get normalized counts file
@@ -490,7 +490,7 @@ def get_counts(input_dir, allncrna_filename, smallrna_type, m, umrfo):
         try:
             if os.stat(f).st_size > 0:
                 # print >> sys.stderr, colored("\t- Sample_id {0:<5} with counts file:\n\t\t{1}".format(fileid,f), "blue")
-                print "\t- Sample_id {0:<5} with counts file:\n\t\t{1}".format(fileid,f)
+                print("\t- Sample_id {0:<5} with counts file:\n\t\t{1}".format(fileid,f))
         
                 # Get the smallrna counts dict
                 d = get_smallrna_counts(f)
@@ -498,7 +498,7 @@ def get_counts(input_dir, allncrna_filename, smallrna_type, m, umrfo):
                 # Store the information in the super dictionary (m)
                 smallrnalist = defaultdict(list) 
                 normalized_total_counts = 0
-                for smallrna, counts in d.items():
+                for smallrna, counts in list(d.items()):
                     normalized_total_counts += counts
                     smallrnalist[smallrna] = counts
                     
@@ -509,12 +509,12 @@ def get_counts(input_dir, allncrna_filename, smallrna_type, m, umrfo):
                     # Add the information to m
                     m[fileid][smallrna_type] = smallrnalist
             else:
-                print colored("\t- Sample_id: {0} for {1} \n\t- Counts file is empty...".format(fileid, smallrna_type), "red")
+                print(colored("\t- Sample_id: {0} for {1} \n\t- Counts file is empty...".format(fileid, smallrna_type), "red"))
                 m[fileid][smallrna_type] = defaultdict(list)
                 m[fileid][smallrna_type + '_total_counts'] = 0
-        except Exception,e: 
-            print str(e)
-            print colored("\t- Sample_id: {0} for {1} \n\t- Counts file does not exists...".format(fileid, smallrna_type), "red")
+        except Exception as e: 
+            print(str(e))
+            print(colored("\t- Sample_id: {0} for {1} \n\t- Counts file does not exists...".format(fileid, smallrna_type), "red"))
             m[fileid][smallrna_type] = defaultdict(list)
             m[fileid][smallrna_type + '_total_counts'] = 0
 
@@ -582,11 +582,11 @@ def custom_autolabel(rects, ax, custom_list=None):
 def report(grid_scores, n_top=3):
     top_scores = sorted(grid_scores, key=itemgetter(1), reverse=True)[:n_top]
     for i, score in enumerate(top_scores):
-        print("Model with rank: {0}".format(i + 1))
-        print("Mean validation score: {0:.3f} (std: {1:.3f})".format(
+        print(("Model with rank: {0}".format(i + 1)))
+        print(("Mean validation score: {0:.3f} (std: {1:.3f})".format(
               score.mean_validation_score,
-              np.std(score.cv_validation_scores)))
-        print("Parameters: {0}".format(score.parameters))
+              np.std(score.cv_validation_scores))))
+        print(("Parameters: {0}".format(score.parameters)))
         print("")
 
 def get_cmap_colors(n, mycmap):

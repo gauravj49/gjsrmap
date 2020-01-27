@@ -1,17 +1,12 @@
 #!/bin/bash
 
-# Unload conflicting modules
-module unload BOWTIE1/1.0.0
-module unload SAMTOOLS/1.9
-module unload SAMTOOLS/1.2
-
-# Load necessary modules
-module load CUTADAPT/1.16
-module load BEDTOOLS/2.24
-module load BOWTIE1/1.1.2
-module load BOWTIE2/2.2.5
-module load FASTQC/0.11.4
-module load SAMTOOLS/1.9
+# # Load necessary modules
+# module load CUTADAPT/1.16
+# module load BEDTOOLS/2.24
+# module load BOWTIE1/1.1.2
+# module load BOWTIE2/2.2.5
+# module load FASTQC/0.11.4
+# module load SAMTOOLS/1.9
 
 # Get input arguments
 jobdir=$1         # "path_to_project_directory"
@@ -144,13 +139,7 @@ do
 
  chmod 775 "${script}"
  echo "Submitting job for ${ffname} ..." 
- if [[ $queue =~ "short" ]]
- then 
-  qtime="01:59"
- else
-  qtime="24:00"
- fi
-  bsub -q ${queue} -n 4 -R "big" -W ${qtime} -e "${errorsFile}" -o "${stdoutFile}" -J ${jobname} sh "${script}"
+ sh "${script}"
  echo " "
 done
 

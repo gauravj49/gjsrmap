@@ -48,12 +48,6 @@ echo "" >> "${script}"
  echo "sh scripts/distribute_counts_usage.sh ${countsDir} ${species} ${rnaClassDir}" >> "${script}"
  echo "" >> "${script}"
 
-# Get summary plot for all samples
-echo "" >> "${script}"
-echo "# Get summary plot for all samples" >> "${script}"
-echo "${python} scripts/ncRNA_mapping_summary.py -id=${countsDir} -of=${summaryPlots}/${projName}_all_samples.txt " >> "${script}"
-echo "" >> "${script}"
-
 # Get MultiQC analysis before trimming
 echo "# Get MultiQC analysis before any trimming" >> "${script}"
 echo "multiqc -o ${multiqcDirI0} -n iteration0 ${fastqcDirI0}" >> "${script}"
@@ -79,6 +73,12 @@ echo "# Get MultiQC analysis after mapping (iteration 1,2,3)" >> "${script}"
 echo "multiqc -o ${multiqcDirIm} ${fastqcDirIm}" >> "${script}"
 echo "" >> "${script}"
 
+# Get summary plot for all samples
+echo "" >> "${script}"
+echo "# Get summary plot for all samples" >> "${script}"
+echo "${python} scripts/ncRNA_mapping_summary.py -id=${countsDir} -of=${summaryPlots}/${projName}_all_samples.txt " >> "${script}"
+echo "" >> "${script}"
+
 # Get the jobname to submit each job as a job array
 jobname="4_summaryPlots_${projName}"
 prevjobname="3_${projName}_*"
@@ -86,14 +86,7 @@ prevjobname="3_${projName}_*"
 # Submit the job
 chmod 775 "${script}"
 echo "Submitting job for ${projName} ..." 
-if [[ $queue =~ "short" ]]
-then 
- qtime="01:59"
-else
- qtime="08:00"
-fi
-
-bsub -w "done(${prevjobname})" -q ${queue} -n 4 -W ${qtime} -e "${errorsFile}" -o "${stdoutFile}" -J ${jobname} bash "${script}"
+bash "${script}"
 
 echo " "
 
