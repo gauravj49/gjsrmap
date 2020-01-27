@@ -33,9 +33,9 @@ def main():
     ##########################################
     ## NOTE: allMirName is actually allNcrnaNames
     # Get the list of all mirnames from reference fasta file
-    print "- Get the list of all mirnas from the reference fasta file: {0} ....".format(input_fasta_file)
+    print("- Get the list of all mirnas from the reference fasta file: {0} ....".format(input_fasta_file))
     allSmncrnaNames = get_all_mir_names(input_fasta_file)
-    print "\t- Total number of smallrnas: {0}".format(len(allSmncrnaNames))
+    print("\t- Total number of smallrnas: {0}".format(len(allSmncrnaNames)))
 
     # Read and parse BWA SAM file
     # @SQ	SN:mmu-miR-6998-5p	LN:22
@@ -45,11 +45,12 @@ def main():
     samSmncrnaNames = defaultdict(int)
     
     # Get the counts
-    print "\n- Getting counts from the SAM file (may take some time depending on sam file size)..."
-    process = subprocess.Popen("grep -v \"^@\" {0} | cut -f3 | sort | uniq -c | column -t ".format(input_file), shell=True, stdout=subprocess.PIPE)
+    print("\n- Getting counts from the SAM file (may take some time depending on sam file size)...")
+    process = subprocess.Popen("grep -v \"^@\" {0} | cut -f3 | sort | uniq -c | column -t ".format(input_file), shell=True, stdout=subprocess.PIPE, encoding='utf-8')
+    # print(process.communicate()[0])
     stdout_list = process.communicate()[0].split('\n')
-    stdout_list = filter(None, stdout_list) # filter out empty lines
-    print "\t- Counting finished"
+    stdout_list = [_f for _f in stdout_list if _f] # filter out empty lines
+    print("\t- Counting finished")
 
     # Get the dictionary of counts found in sam file
     for line in stdout_list:
@@ -63,13 +64,13 @@ def main():
 
 
     # Get library depth
-    library_depth = int(sum(samSmncrnaNames.itervalues()))
-    print "\n- Process the input SAM file: {0}".format(input_file)
-    print "\t- Library depth: {0}".format(library_depth)
+    library_depth = int(sum(samSmncrnaNames.values()))
+    print("\n- Process the input SAM file: {0}".format(input_file))
+    print("\t- Library depth: {0}".format(library_depth))
 
     # Get the list of mirnas not in SAM file
     unexpressed_smncrnaNames = list(set(allSmncrnaNames).difference(set(samSmncrnaNames.keys())))
-    no_feature_names     = list(set(unexpressed_smncrnaNames + samSmncrnaNames.keys()).difference(set(allSmncrnaNames)))
+    no_feature_names     = list(set(unexpressed_smncrnaNames + list(samSmncrnaNames.keys())).difference(set(allSmncrnaNames)))
     
     no_features_count = 0
     for nf in no_feature_names:
@@ -87,7 +88,7 @@ def main():
     # Save counts in output file sorted by small ncrna names (so that they are same in every samples)
     # This is useful when doing other analysis like DE via DeSEQ2
     i = 1
-    for k,v in sorted(allsmncrnadict.iteritems()):
+    for k,v in sorted(allsmncrnadict.items()):
         if k == '*':
             continue
         if k in no_feature_names:
@@ -173,12 +174,12 @@ def useful_lines(fh):
 def print_initial_arguments(parser):
     ''' Prints all the initial arguments entered '''
 
-    print "\n------Input Arguments ------"
+    print("\n------Input Arguments ------")
     opts = vars(parser.parse_args())
-    maxl = max(len(text) for text in opts.keys())
-    for k,v in opts.items():
-        print "%-*s = %s" % (maxl, k, v)
-    print "-"*29, "\n"
+    maxl = max(len(text) for text in list(opts.keys()))
+    for k,v in list(opts.items()):
+        print("%-*s = %s" % (maxl, k, v))
+    print("-"*29, "\n")
 
 # class for Logging
 class Log(object):
