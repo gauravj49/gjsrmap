@@ -33,7 +33,7 @@ from numpy import nanmean
 import glob
 
 # user defined modules
-from gjainLIB import *      # import all the functions from the Gaurav`s python library
+from gjainPyLib import *      # import all the functions from the Gaurav`s python scripts/library
 
 ### for color scale
 from  matplotlib import colors

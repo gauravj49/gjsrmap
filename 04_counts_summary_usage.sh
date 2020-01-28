@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Load necessary modules
-python="/usr/users/gjain/bin/libs/python/bin/python"
+# # Load necessary modules
+# python="/usr/users/gjain/bin/libs/python/bin/python"
 
 # Get input arguments
 jobdir=$1         # /usr/users/gjain/bin/projects/map2ncrna
